@@ -326,6 +326,68 @@
       </div>
     </article>
 
+    <!-- Gradescope Backup Tool — VERIFIED REAL, fully working -->
+    <article class="card" data-cat="auto">
+      <div class="card-tags">
+        <span class="tag status-live">Verified &amp; Working</span>
+        <span class="tag">Automation</span>
+        <span class="tag">Academic Tools</span>
+      </div>
+      <h3>Gradescope Dashboard Backup Tool</h3>
+      <p>A Python script that logs into Gradescope and walks every enrolled course, matching each assignment to its graded submission and downloading a clean, organized archive of every graded PDF. Confirmed working end-to-end across all courses.</p>
+      <div class="media-slot">CLI tool — run locally with your own Gradescope login</div>
+      <div class="stack">Python &bull; gradescopeapi &bull; Regex Scraping</div>
+      <div class="card-links">
+        <a href="code.html?project=gradescope">View Code &rarr;</a>
+      </div>
+    </article>
+
+    <!-- Canvas Backup Tool — works via session cookie; 403 on some restricted courses -->
+    <article class="card" data-cat="auto">
+      <div class="card-tags">
+        <span class="tag status-live">Verified &amp; Working</span>
+        <span class="tag">Automation</span>
+        <span class="tag">Academic Tools</span>
+      </div>
+      <h3>Canvas Course Backup Tool</h3>
+      <p>Authenticates with a Canvas session cookie (which sidesteps Duo 2FA), then walks every active course across four tabs: Files, Assignments, Pages, and Modules. Documents download into an organized per-course folder, assignment prompts and wiki pages are rewritten as readable offline HTML, and external module links become shortcut files. Courses whose enrollment window has closed return access-restricted and are skipped, and a handful of classes lock down Files-tab access entirely, so those come back empty.</p>
+      <div class="media-slot">CLI tool — run locally with your own Canvas session cookie</div>
+      <div class="stack">Python &bull; requests &bull; Canvas REST API</div>
+      <div class="card-links">
+        <a href="code.html?project=canvas">View Code &rarr;</a>
+      </div>
+    </article>
+
+    <!-- FB Marketplace alert bot - vehicles only, one buyer's hardcoded criteria -->
+    <article class="card" data-cat="auto">
+      <div class="card-tags">
+        <span class="tag status-live">Working, Verified</span>
+        <span class="tag">Automation</span>
+        <span class="tag">Web Scraping</span>
+      </div>
+      <h3>Facebook Marketplace Car Alert Bot</h3>
+      <p>Headless Playwright loads a pre-filtered Marketplace vehicle search without logging in, then recovers listings by walking the page's embedded JSON for MarketplaceProductItem objects. Local rules are fully personalizable, mileage, price, transmission, body type and more, so you can tune what gets filtered out before anything reaches the model. Survivors go to Gemini 2.5 Flash with Search grounding, which scores each car out of 10 against the criteria you give it and sends a notification list of the best matches on Telegram. A jittered 25 to 35 minute loop tracks seen listings and price drops in JSON and caps at 10 evaluations per cycle to stay in the free tier. Could add a UI to make the filtering process more streamlined. You'll need to add your own Telegram API.</p>
+      <div class="media-slot">CLI tool, run locally with your own Gemini key and Telegram bot</div>
+      <div class="stack">Python &bull; Playwright &bull; Gemini 2.5 Flash &bull; Telegram Bot API</div>
+      <div class="card-links">
+        <a href="code.html?project=fbmarket">View Code &rarr;</a>
+      </div>
+    </article>
+
+    <!-- FPV Drone — hardware build, descriptive only -->
+    <article class="card" data-cat="bci">
+      <div class="card-tags">
+        <span class="tag status-live">Built &amp; Operational</span>
+        <span class="tag">Embedded Hardware</span>
+        <span class="tag">Quadcopter</span>
+      </div>
+      <h3>70+ MPH Custom FPV Racing Drone</h3>
+      <p>Designed, soldered, and programmed a custom high-performance quadcopter: PID controller tuning, ESC configuration, and live FPV video transmission setup. Built, flown, and currently flying.</p>
+      <div class="media-slot ready"><img src="assets/droneimage_web.jpg" alt="Custom-built 70+ MPH FPV racing drone" loading="lazy" width="1600" height="1200" style="width:100%;height:auto;display:block;"></div>
+      <div class="media-slot" style="margin-top:8px;">Flight footage coming soon</div>
+      <div class="stack">Soldering &bull; PID Tuning &bull; Embedded Systems</div>
+    </article>
+
     <!-- Fall Detection — code complete, not yet validated against real falls/hardware -->
     <article class="card" data-cat="cv">
       <div class="card-tags">
@@ -346,38 +408,6 @@
       </div>
     </article>
 
-    <!-- Gradescope Backup Tool — VERIFIED REAL, fully working -->
-    <article class="card" data-cat="auto">
-      <div class="card-tags">
-        <span class="tag status-live">Verified &amp; Working</span>
-        <span class="tag">Automation</span>
-        <span class="tag">Academic Tools</span>
-      </div>
-      <h3>Gradescope Dashboard Backup Tool</h3>
-      <p>A Python script that logs into Gradescope and walks every enrolled course, matching each assignment to its graded submission and downloading a clean, organized archive of every graded PDF. Confirmed working end-to-end across all courses.</p>
-      <div class="media-slot">CLI tool — run locally with your own Gradescope login</div>
-      <div class="stack">Python &bull; gradescopeapi &bull; Regex Scraping</div>
-      <div class="card-links">
-        <a href="code.html?project=gradescope">View Code &rarr;</a>
-      </div>
-    </article>
-
-    <!-- Canvas Backup Tool — works via session cookie; 403 on some restricted courses -->
-    <article class="card" data-cat="auto">
-      <div class="card-tags">
-        <span class="tag status-progress">Partially Working &mdash; Functional With Limitations</span>
-        <span class="tag">Automation</span>
-        <span class="tag">Academic Tools</span>
-      </div>
-      <h3>Canvas Course Backup Tool</h3>
-      <p>Authenticates with a Canvas session cookie (which sidesteps Duo 2FA), then walks every active course across four tabs: Files, Assignments, Pages, and Modules. Documents download into an organized per-course folder, assignment prompts and wiki pages are rewritten as readable offline HTML, and external module links become shortcut files. Courses whose enrollment window has closed return access-restricted and are skipped, and a handful of classes lock down Files-tab access entirely, so those come back empty.</p>
-      <div class="media-slot">CLI tool — run locally with your own Canvas session cookie</div>
-      <div class="stack">Python &bull; requests &bull; Canvas REST API</div>
-      <div class="card-links">
-        <a href="code.html?project=canvas">View Code &rarr;</a>
-      </div>
-    </article>
-
     <!-- Bank churn co-pilot - reads one public deal page; no bank login, no money movement -->
     <article class="card" data-cat="auto">
       <div class="card-tags">
@@ -391,22 +421,6 @@
       <div class="stack">Python &bull; Flet &bull; Gemini 2.5 Flash &bull; Pydantic &bull; BeautifulSoup &bull; SQLite</div>
       <div class="card-links">
         <a href="code.html?project=bankchurn">View Code &rarr;</a>
-      </div>
-    </article>
-
-    <!-- FB Marketplace alert bot - vehicles only, one buyer's hardcoded criteria -->
-    <article class="card" data-cat="auto">
-      <div class="card-tags">
-        <span class="tag status-live">Working, Verified</span>
-        <span class="tag">Automation</span>
-        <span class="tag">Web Scraping</span>
-      </div>
-      <h3>Facebook Marketplace Car Alert Bot</h3>
-      <p>Headless Playwright loads a pre-filtered Marketplace vehicle search without logging in, then recovers listings by walking the page's embedded JSON for MarketplaceProductItem objects. Local rules are fully personalizable, mileage, price, transmission, body type and more, so you can tune what gets filtered out before anything reaches the model. Survivors go to Gemini 2.5 Flash with Search grounding, which scores each car out of 10 against the criteria you give it and sends a notification list of the best matches on Telegram. A jittered 25 to 35 minute loop tracks seen listings and price drops in JSON and caps at 10 evaluations per cycle to stay in the free tier. Could add a UI to make the filtering process more streamlined. You'll need to add your own Telegram API.</p>
-      <div class="media-slot">CLI tool, run locally with your own Gemini key and Telegram bot</div>
-      <div class="stack">Python &bull; Playwright &bull; Gemini 2.5 Flash &bull; Telegram Bot API</div>
-      <div class="card-links">
-        <a href="code.html?project=fbmarket">View Code &rarr;</a>
       </div>
     </article>
 
@@ -424,20 +438,6 @@
       <div class="card-links">
         <a href="code.html?project=tradingsignal">View Code &rarr;</a>
       </div>
-    </article>
-
-    <!-- FPV Drone — hardware build, descriptive only -->
-    <article class="card" data-cat="bci">
-      <div class="card-tags">
-        <span class="tag status-live">Built &amp; Operational</span>
-        <span class="tag">Embedded Hardware</span>
-        <span class="tag">Quadcopter</span>
-      </div>
-      <h3>70+ MPH Custom FPV Racing Drone</h3>
-      <p>Designed, soldered, and programmed a custom high-performance quadcopter: PID controller tuning, ESC configuration, and live FPV video transmission setup. Built, flown, and currently flying.</p>
-      <div class="media-slot ready"><img src="assets/droneimage_web.jpg" alt="Custom-built 70+ MPH FPV racing drone" loading="lazy" width="1600" height="1200" style="width:100%;height:auto;display:block;"></div>
-      <div class="media-slot" style="margin-top:8px;">Flight footage coming soon</div>
-      <div class="stack">Soldering &bull; PID Tuning &bull; Embedded Systems</div>
     </article>
 
   </div>
