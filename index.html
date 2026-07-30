@@ -268,7 +268,7 @@
     <!-- Meta TRIBE v2 — real model run on a pre-registered stimulus -->
     <article class="card" data-cat="neuro">
       <div class="card-tags">
-        <span class="tag status-progress">Real Model Run, Claims Kept Narrow</span>
+        <span class="tag status-progress">Currently Running Validation Testing</span>
         <span class="tag">Neural Encoding &amp; AI</span>
         <span class="tag">Pre-Registered Analysis</span>
       </div>
@@ -293,7 +293,7 @@
         <span class="tag">Real-Time</span>
       </div>
       <h3>EEG Flappy Bird (Real-Time BCI)</h3>
-      <p>A complete Flappy Bird clone (pipes, collisions, scoring, restart flow, high scores) controlled by ocular-blink artifacts read from a Backyard Brains SpikerBox over serial at 223,200 baud. Runs a threaded signal-processing loop (rolling baseline subtraction, adaptive blink threshold tunable live with UP/DOWN) and renders a live oscilloscope HUD of the EEG waveform under the game. A draggable threshold slider sits in the HUD next to the live trace, which is the whole calibration story for a blink BCI: everyone's blink amplitude differs, and set the bar too low and a jaw clench flies the bird. Requires a real SpikerBox to play &mdash; a built-in EEG/EOG simulator is available for testing/demo purposes via a command-line flag, but it won't run in simulation mode silently.</p>
+      <p>A complete Flappy Bird clone (pipes, collisions, scoring, restart flow, high scores) controlled by ocular-blink artifacts read from a Backyard Brains SpikerBox over serial at 223,200 baud. Runs a threaded signal-processing loop (rolling baseline subtraction, adaptive blink threshold tunable live with UP/DOWN) and renders a live oscilloscope HUD of the EEG waveform under the game. A draggable threshold slider sits in the HUD next to the live trace. This is how you calibrate the blink strength, since everyone's blink amplitude differs. Set the bar too low and minor movements or eye twitches set off the jump. Requires a real SpikerBox to play. A built in EEG simulation is available for demo purposes via command line.</p>
       <div class="media-slot ready">
         <video class="demo-video" preload="metadata" src="assets/eeg_flappy_bird_demo.mp4" aria-label="EEG Flappy Bird running in simulation mode with live oscilloscope HUD" width="800" height="600" style="width:100%;height:auto;display:block;" autoplay loop muted playsinline controls>
         </video>
@@ -312,14 +312,14 @@
         <span class="tag">Signal Processing</span>
       </div>
       <h3>Live EEG Signal Analysis Dashboard</h3>
-      <p>The real-time signal-processing engine behind the EEG work: streams raw EEG from a Backyard Brains SpikerBox over serial, applies a live bandpass + 60Hz notch filter with persistent filter state (scipy <code>sosfilt</code>), extracts Welch PSD band powers (Delta/Theta/Alpha/Beta/Low &amp; High Gamma), and feeds them into incremental PCA plus a periodically recomputed t-SNE embedding — all drawn across a 4-panel live Matplotlib dashboard. A blink-spike detector watches the filtered signal and fires a spacebar keypress, the mechanism that drives EEG Flappy Bird.</p>
-      <p>The idea behind it: take a resting-state baseline off the SpikerBox, then watch how different brain states pull apart as they pass through successive dimensionality-reduction stages. Band-power features feed an incremental PCA, which feeds a periodically recomputed t-SNE embedding, so distinct cognitive states land in visibly different regions of the low-dimensional space instead of one undifferentiated cloud. It runs end to end on my own hardware and the separation is real. The clustering sharpens with longer baselines, and the blink-spike trigger threshold still wants tuning against individual blink amplitudes.</p>
+      <p>The real-time signal-processing engine behind the EEG work: streams raw EEG from a Backyard Brains SpikerBox over serial, applies a live bandpass + 60Hz notch filter with persistent filter state (scipy <code>sosfilt</code>), extracts Welch PSD band powers (Delta/Theta/Alpha/Beta/Low &amp; High Gamma), and feeds them into incremental PCA plus a periodically recomputed t-SNE embedding, all drawn across a 4-panel live Matplotlib dashboard. A blink-spike detector watches the filtered signal and fires a spacebar keypress, the mechanism that drives EEG Flappy Bird.</p>
+      <p>The idea behind it: take a resting-state baseline off the SpikerBox, then watch how different brain states pull apart as they pass through successive dimensionality-reduction stages. Band-power features feed an incremental PCA, which feeds a periodically recomputed t-SNE embedding, so distinct cognitive states land in visibly different regions of the low-dimensional space instead of one undifferentiated cloud. It runs end to end on my own hardware and the separation is real. Longer baselines produce sharper clustering, but the blink-spike trigger threshold still needs tuning for each person's blink amplitude.</p>
       <div class="media-slot ready">
         <video class="demo-video" preload="metadata" src="assets/eeg_dashboard_demo.mp4" aria-label="Live EEG dashboard demo on a synthetic signal: filtered waveform, band powers, PCA and t-SNE panels" width="880" height="660" style="width:100%;height:auto;display:block;" autoplay loop muted playsinline controls>
         </video>
       </div>
       <p style="font-size:0.85rem;">It also does blink-artifact rejection, with an on/off switch and a threshold slider. A blink is a large, slow deflection that sits inside the 0.5&ndash;70 Hz passband, so the bandpass can't touch it, and because power scales with amplitude squared a single blink dumps enormous energy into Delta and Theta. Left alone, that propagates into PCA and t-SNE and the dominant axis of the "neural manifold" turns out to be how recently you blinked. Supra-threshold samples are interpolated across, and windows too contaminated to reconstruct are dropped rather than guessed at. The raw trace stays untouched so blinks are still visible; only the features are cleaned.</p>
-      <p style="font-size:0.8rem;">Recording above is driven by a reproducible test signal with blinks at known timestamps, so the detector's hits and misses can be scored frame by frame: it currently lands 5/5 with no false positives. The same code path runs unchanged on live SpikerBox input.</p>
+      <p style="font-size:0.8rem;">Recording above is driven by a reproducible test signal with blinks at known timestamps, so the detector's hits and misses can be scored frame by frame: it currently lands 5/5 with no false positives. The same code path runs unchanged on live SpikerBox input. Demo shows simulated data, but I have successfully run it on a real SpikerBox.</p>
       <div class="stack">Python &bull; SciPy (sosfilt / Welch PSD) &bull; scikit-learn (IncrementalPCA, t-SNE) &bull; Matplotlib &bull; PySerial &bull; pynput</div>
       <div class="card-links">
         <a href="code.html?project=eegdashboard">View Code &rarr;</a>
@@ -334,12 +334,12 @@
       </div>
       <h3>Real-Time Elder-Care Fall Detection</h3>
       <p>A local monitoring pipeline combining MediaPipe pose estimation (fall detection via center-of-gravity + body aspect-ratio) with YOLOv8 object detection (tracks held items like phones near the hands), served as a live Flask dashboard with a privacy shield that blanks the video feed until an emergency is confirmed.</p>
-      <p style="font-size:0.85rem;">Held-item detection has its own on/off switch in the dashboard. It's the expensive half of the pipeline (a YOLO forward pass every frame), and fall detection runs entirely off MediaPipe pose, so turning items off frees up frame budget without touching the safety feature.</p>
+      <p style="font-size:0.85rem;">Held-item detection has its own on/off switch in the dashboard. It's the expensive half of the pipeline (a YOLO forward pass every frame), and fall detection runs entirely off MediaPipe pose, so turning items off frees up frame budget without touching the safety feature. The item detection was more proof of concept, it could be used to trigger an emergency, or can be disabled.</p>
       <div class="media-slot ready">
         <video class="demo-video" preload="metadata" src="assets/fall_detection_demo.mp4" aria-label="Fall detection dashboard: privacy shield active while monitoring, then emergency view revealed after a detected fall" width="1000" height="818" style="width:100%;height:auto;display:block;" autoplay loop muted playsinline controls>
         </video>
       </div>
-      <div class="stack-note" style="color:var(--text-dim);font-size:0.78rem;">Demo: real MediaPipe + YOLOv8 inference running against a synthetic test clip (no live webcam in this environment) &mdash; the dashboard genuinely detects the fall and flips from Privacy Shield to Emergency on its own.</div>
+      <div class="stack-note" style="color:var(--text-dim);font-size:0.78rem;">Demo: real MediaPipe + YOLOv8 inference running against a synthetic test clip. It works, I will add a real video soon.</div>
       <div class="stack">Python &bull; MediaPipe &bull; YOLOv8 &bull; Flask &bull; OpenCV</div>
       <div class="card-links">
         <a href="code.html?project=falldetect">View Code &rarr;</a>
@@ -354,7 +354,7 @@
         <span class="tag">Academic Tools</span>
       </div>
       <h3>Gradescope Dashboard Backup Tool</h3>
-      <p>A Python script that logs into Gradescope and walks every enrolled course, matching each assignment to its graded submission and downloading a clean, organized archive of every graded PDF — confirmed working end-to-end across all courses.</p>
+      <p>A Python script that logs into Gradescope and walks every enrolled course, matching each assignment to its graded submission and downloading a clean, organized archive of every graded PDF. Confirmed working end-to-end across all courses.</p>
       <div class="media-slot">CLI tool — run locally with your own Gradescope login</div>
       <div class="stack">Python &bull; gradescopeapi &bull; Regex Scraping</div>
       <div class="card-links">
@@ -386,7 +386,7 @@
         <span class="tag">LLM Extraction</span>
       </div>
       <h3>Bank Bonus Churning Co-Pilot</h3>
-      <p>The Drive folder is named BankAccountScraper and ships a churn-copilot APK, which reads like a bot that logs into banks. It does not. The scraper fetches one public URL, the Doctor of Credit bonus list, and hands the HTML to Gemini 2.5 Flash for structured extraction into a Pydantic schema: bonus amount, deposit requirement, holding period, fee waivers, state and county eligibility. Each offer is cross-checked against the bank's own terms page, then stored in SQLite. It never authenticates to a bank and never moves money. Plaid and Dwolla point at sandbox endpoints, and the ACH layer is explicitly simulated.</p>
+      <p>The idea is a bot that automatically runs a bank-churning process in the background and deposits extra money into your main account. Give it $500, and it finds the best deals for your bankroll and goal timeframe based on a short eligibility questionnaire. It then automatically opens new bank accounts, closes them, and withdraws the money into your main account, repeating the process until you're maximizing profits. A dashboard and calendar show expected profits and timeline, with a built-in comparison against the S&amp;P 500. It pops up an authentication window on your phone whenever sensitive information needs to be entered. It scrapes Doctor of Credit and a few other websites, then hands the HTML to Gemini 2.5 to build a personalized plan, running daily so the best deals get caught. Uses Plaid and Dwolla to move money automatically on schedule.</p>
       <div class="media-slot">Flet desktop/Android app, run locally with your own Gemini API key</div>
       <div class="stack">Python &bull; Flet &bull; Gemini 2.5 Flash &bull; Pydantic &bull; BeautifulSoup &bull; SQLite</div>
       <div class="card-links">
@@ -397,12 +397,12 @@
     <!-- FB Marketplace alert bot - vehicles only, one buyer's hardcoded criteria -->
     <article class="card" data-cat="auto">
       <div class="card-tags">
-        <span class="tag status-progress">Working, Narrow By Design</span>
+        <span class="tag status-live">Working, Verified</span>
         <span class="tag">Automation</span>
         <span class="tag">Web Scraping</span>
       </div>
       <h3>Facebook Marketplace Car Alert Bot</h3>
-      <p>Headless Playwright loads a pre-filtered Marketplace vehicle search without logging in, then recovers listings by walking the page's embedded JSON for MarketplaceProductItem objects. Local rules drop anything over $8,000, over 130,000 miles, automatic, or matching a body-type blocklist. Survivors go to Gemini 2.5 Flash with Search grounding, which scores each car out of 10; 7 or higher fires a Telegram alert. A jittered 25 to 35 minute loop tracks seen listings and price drops in JSON and caps at 10 evaluations per cycle to stay in the free tier. Narrower than its name: vehicles only, hardcoded to one buyer's criteria (manual sports cars under $8,000, CARB smog rules in the prompt).</p>
+      <p>Headless Playwright loads a pre-filtered Marketplace vehicle search without logging in, then recovers listings by walking the page's embedded JSON for MarketplaceProductItem objects. Local rules are fully personalizable, mileage, price, transmission, body type and more, so you can tune what gets filtered out before anything reaches the model. Survivors go to Gemini 2.5 Flash with Search grounding, which scores each car out of 10 against the criteria you give it and sends a notification list of the best matches on Telegram. A jittered 25 to 35 minute loop tracks seen listings and price drops in JSON and caps at 10 evaluations per cycle to stay in the free tier. Could add a UI to make the filtering process more streamlined. You'll need to add your own Telegram API.</p>
       <div class="media-slot">CLI tool, run locally with your own Gemini key and Telegram bot</div>
       <div class="stack">Python &bull; Playwright &bull; Gemini 2.5 Flash &bull; Telegram Bot API</div>
       <div class="card-links">
@@ -418,7 +418,7 @@
         <span class="tag">Signal Generation</span>
       </div>
       <h3>Crypto Mean-Reversion Signal Generator</h3>
-      <p>The folder is named trading_bot2, but the code contains no order execution. There is no create_order call, it holds no API keys, it authenticates to nothing, and it cannot move funds. It reads public market data through ccxt on binanceus spot and prints JSON. It is a signal generator, not a trading bot. A 200 EMA on the 4h chart sets the regime, and BEAR always holds. In BULL it flags BUY when the 15m z-score drops below -2.0 or RSI(14) below 30, and SELL when price returns to the 20-period SMA or upper Bollinger Band. Symbols are PEPE/USDT, RENDER/USDT and ARB/USDT. LEVERAGE = 5 is never referenced, and spot has no leverage anyway.</p>
+      <p>It reads public market data through ccxt on binanceus spot and prints JSON. The logic is there, and I am working on live testing it with fake money for validation. I am working on implementing this logic into an automatic trading system. A 200 EMA on the 4h chart sets the regime, and BEAR always holds. In BULL it flags BUY when the 15m z-score drops below -2.0 or RSI(14) below 30, and SELL when price returns to the 20-period SMA or upper Bollinger Band. Symbols are PEPE/USDT, RENDER/USDT and ARB/USDT. LEVERAGE = 5 is never referenced, and spot has no leverage anyway.</p>
       <div class="media-slot">CLI tool, run locally, no API key or exchange account needed</div>
       <div class="stack">Python &bull; ccxt &bull; pandas &bull; numpy</div>
       <div class="card-links">
@@ -477,7 +477,7 @@
     <h3>Property &amp; Facilities Operations Manager</h3>
     <div class="meta">University District, Seattle &bull; Apr 2023 – Jun 2024</div>
     <ul>
-      <li>Directed facility operations for a $5M+ multi-story residence, managing 30+ person teams and technical repairs while ensuring municipal safety compliance.</li>
+      <li>Directed facility operations and repairs for a $5M+ multi-story residence, managing 30+ person teams and technical repairs while ensuring municipal safety compliance.</li>
     </ul>
   </div>
 </section>
