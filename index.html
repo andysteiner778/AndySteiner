@@ -326,6 +326,26 @@
       </div>
     </article>
 
+    <!-- Fall Detection — code complete, not yet validated against real falls/hardware -->
+    <article class="card" data-cat="cv">
+      <div class="card-tags">
+        <span class="tag status-progress">Working &mdash; In Testing</span>
+        <span class="tag">Healthcare Vision AI</span>
+      </div>
+      <h3>Real-Time Elder-Care Fall Detection</h3>
+      <p>A local monitoring pipeline combining MediaPipe pose estimation (fall detection via center-of-gravity + body aspect-ratio) with YOLOv8 object detection (tracks held items like phones near the hands), served as a live Flask dashboard with a privacy shield that blanks the video feed until an emergency is confirmed.</p>
+      <p style="font-size:0.85rem;">Held-item detection has its own on/off switch in the dashboard. It's the expensive half of the pipeline (a YOLO forward pass every frame), and fall detection runs entirely off MediaPipe pose, so turning items off frees up frame budget without touching the safety feature. The item detection was more proof of concept, it could be used to trigger an emergency, or can be disabled.</p>
+      <div class="media-slot ready">
+        <video class="demo-video" preload="metadata" src="assets/fall_detection_demo.mp4" aria-label="Fall detection dashboard: privacy shield active while monitoring, then emergency view revealed after a detected fall" width="1000" height="818" style="width:100%;height:auto;display:block;" autoplay loop muted playsinline controls>
+        </video>
+      </div>
+      <div class="stack-note" style="color:var(--text-dim);font-size:0.78rem;">Demo: real MediaPipe + YOLOv8 inference running against a synthetic test clip. It works, I will add a real video soon.</div>
+      <div class="stack">Python &bull; MediaPipe &bull; YOLOv8 &bull; Flask &bull; OpenCV</div>
+      <div class="card-links">
+        <a href="code.html?project=falldetect">View Code &rarr;</a>
+      </div>
+    </article>
+
     <!-- Gradescope Backup Tool — VERIFIED REAL, fully working -->
     <article class="card" data-cat="auto">
       <div class="card-tags">
@@ -386,26 +406,6 @@
       <div class="media-slot ready"><img src="assets/droneimage_web.jpg" alt="Custom-built 70+ MPH FPV racing drone" loading="lazy" width="1600" height="1200" style="width:100%;height:auto;display:block;"></div>
       <div class="media-slot" style="margin-top:8px;">Flight footage coming soon</div>
       <div class="stack">Soldering &bull; PID Tuning &bull; Embedded Systems</div>
-    </article>
-
-    <!-- Fall Detection — code complete, not yet validated against real falls/hardware -->
-    <article class="card" data-cat="cv">
-      <div class="card-tags">
-        <span class="tag status-progress">Working &mdash; In Testing</span>
-        <span class="tag">Healthcare Vision AI</span>
-      </div>
-      <h3>Real-Time Elder-Care Fall Detection</h3>
-      <p>A local monitoring pipeline combining MediaPipe pose estimation (fall detection via center-of-gravity + body aspect-ratio) with YOLOv8 object detection (tracks held items like phones near the hands), served as a live Flask dashboard with a privacy shield that blanks the video feed until an emergency is confirmed.</p>
-      <p style="font-size:0.85rem;">Held-item detection has its own on/off switch in the dashboard. It's the expensive half of the pipeline (a YOLO forward pass every frame), and fall detection runs entirely off MediaPipe pose, so turning items off frees up frame budget without touching the safety feature. The item detection was more proof of concept, it could be used to trigger an emergency, or can be disabled.</p>
-      <div class="media-slot ready">
-        <video class="demo-video" preload="metadata" src="assets/fall_detection_demo.mp4" aria-label="Fall detection dashboard: privacy shield active while monitoring, then emergency view revealed after a detected fall" width="1000" height="818" style="width:100%;height:auto;display:block;" autoplay loop muted playsinline controls>
-        </video>
-      </div>
-      <div class="stack-note" style="color:var(--text-dim);font-size:0.78rem;">Demo: real MediaPipe + YOLOv8 inference running against a synthetic test clip. It works, I will add a real video soon.</div>
-      <div class="stack">Python &bull; MediaPipe &bull; YOLOv8 &bull; Flask &bull; OpenCV</div>
-      <div class="card-links">
-        <a href="code.html?project=falldetect">View Code &rarr;</a>
-      </div>
     </article>
 
     <!-- Bank churn co-pilot - reads one public deal page; no bank login, no money movement -->
