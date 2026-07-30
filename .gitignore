@@ -1,0 +1,6 @@
+# Build helper scripts used to generate code.html (not needed to serve the site)
+build_code_html.py
+
+# OS cruft
+.DS_Store
+Thumbs.db
