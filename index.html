@@ -234,13 +234,20 @@
         <span class="tag">Bio-Image Automation</span>
       </div>
       <h3>Automated Fluorescent Cell Counter (DAPI)</h3>
-      <p>Engineered a Fiji/ImageJ macro pipeline for automated neuron density counting on fluorescent brain slices in pediatric HIE research. Reduced manual quantification time by over 90% (from 10–20 hours to minutes) and presented findings at the 2024 UW Research Symposium.</p>
+      <p>Engineered a Fiji/ImageJ macro that automates DAPI nuclei counting on fluorescent brain slices for pediatric hypoxic-ischemic encephalopathy (HIE) research in a ferret model, replacing hand counting that took 10&ndash;20 hours per study. The macro batch-walks folder trees, applies fluorescence thresholding (Otsu for multicolor images), runs watershed to split touching nuclei, then counts by size and circularity.</p>
+      <p>Validated against historic hand-counted data using linear regression and Bland-Altman. On single-channel term slices the macro matched human counts at <strong>R&sup2; = 0.9965</strong>, mean difference &minus;7.97 cells (95% CI &minus;25.96 to 10.02). On harder multicolor preterm slices agreement dropped to <strong>R&sup2; = 0.6904</strong> with a much wider CI, which set the boundary on where the tool can be trusted. First author on the resulting poster at the 2024 UW Undergraduate Research Symposium.</p>
       <div class="media-slot ready">
         <iframe src="https://drive.google.com/file/d/1u4lyJbJ6CnF3E3EfNzXKlI0EuS7g4QBl/preview" allow="autoplay" allowfullscreen></iframe>
       </div>
-      <div class="stack">Fiji / ImageJ &bull; Bio-Formats &bull; UW Research Symposium</div>
+      <div class="media-slot ready" style="margin-top:12px;">
+        <a href="assets/urs_poster_cell_counting.pdf" target="_blank" rel="noopener" aria-label="Open the full research poster as a PDF">
+          <img src="assets/urs_poster_cell_counting_web.jpg" alt="Research poster titled Evaluating the Effectiveness of an Automated Cell Counting Program, showing the ImageJ macro workflow, example thresholded and watershed brain slice images, and Bland-Altman and linear regression plots comparing macro counts to hand counts." loading="lazy" width="1600" height="1280" style="width:100%;height:auto;display:block;">
+        </a>
+      </div>
+      <div class="stack">Fiji / ImageJ Macro &bull; Bio-Formats &bull; Otsu Thresholding &bull; Watershed &bull; Bland-Altman</div>
       <div class="card-links">
         <a href="https://drive.google.com/file/d/1u4lyJbJ6CnF3E3EfNzXKlI0EuS7g4QBl/view" target="_blank" rel="noopener">Watch Full Demo Video</a>
+        <a href="assets/urs_poster_cell_counting.pdf" target="_blank" rel="noopener">Research Poster (PDF)</a>
         <a href="code.html?project=cellcounter">View Code &rarr;</a>
       </div>
     </article>
@@ -481,7 +488,7 @@
     <div class="meta">Neonatal Neuroscience Lab (Wood Lab) — UW Medicine &bull; May 2023 – Jun 2024</div>
     <ul>
       <li>Performed rodent surgical procedures (mice, rats, ferrets) to evaluate neuroprotectant efficacy for translational research targeting neonatal HIE using the Rice-Vannucci carotid artery ligation model.</li>
-      <li>Engineered an automated cell-counting tool in Fiji/ImageJ, increasing analysis throughput by over 90% and presenting findings at the 2024 UW Research Symposium.</li>
+      <li>Engineered an automated DAPI cell-counting macro in Fiji/ImageJ, cutting quantification from 10&ndash;20 hours per study to minutes and validating it against hand counts at R&sup2; = 0.9965 on single-channel slices (Bland-Altman mean difference &minus;7.97 cells). First author on the resulting 2024 UW Undergraduate Research Symposium poster.</li>
     </ul>
   </div>
 
