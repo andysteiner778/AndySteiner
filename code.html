@@ -3323,6 +3323,169 @@ def main():
 if __name__ == '__main__':
     main()`
     },
+    agentbridge: {
+      howToRun: {
+        intro: "This is an MCP server, not a script you run directly. Claude Desktop (or Cowork) launches it over stdio using the connector config below, then the orchestrator calls its two tools directly, one per coding agent.",
+        steps: [
+          { text: "Install dependencies.", cmd: "pip install \"mcp[cli]\" fastmcp" },
+          { text: "Set the three environment variables the bridge reads at import time: the workspace it's allowed to touch, and absolute paths to the two CLIs it's allowed to spawn.", cmd: "AGENT_BRIDGE_WORKSPACE=E:\\CryptoBot\nAGENT_BRIDGE_CLAUDE=C:\\Users\\you\\.local\\bin\\claude.exe\nAGENT_BRIDGE_AGY=C:\\Users\\you\\AppData\\Local\\agy\\bin\\agy.exe" },
+          { text: "Register it as an MCP connector in Claude Desktop's config file. On a Microsoft Store install this lives under <code>%LOCALAPPDATA%\\Packages\\Claude_*\\LocalCache\\Roaming\\Claude\\</code>, not the usual <code>%APPDATA%\\Claude\\</code>.", cmd: "{\n  \"mcpServers\": {\n    \"agent-bridge\": {\n      \"command\": \"...\\\\.venv\\\\Scripts\\\\python.exe\",\n      \"args\": [\"...\\\\server.py\"],\n      \"env\": {\n        \"AGENT_BRIDGE_WORKSPACE\": \"...\",\n        \"AGENT_BRIDGE_CLAUDE\": \"...\",\n        \"AGENT_BRIDGE_AGY\": \"...\"\n      }\n    }\n  }\n}" },
+          { text: "Restart Claude Desktop. The orchestrator now has two tools, <code>dispatch_claude_code</code> and <code>dispatch_antigravity</code>, and routes each task between them by how much damage a mistake would do, not by task difficulty." }
+        ],
+        note: "Both CLIs can exit 0 having done nothing. Antigravity soft-denies tool permissions in headless mode, prints a notice to stderr, and exits 0 with no output. The bridge treats that, plus exit 0 with empty stdout, as failures and returns an explicit FAILED string rather than letting the orchestrator record a false success."
+      },
+      title: "Agent Bridge: Cross-Vendor AI Agent Orchestration",
+      tag: "Automation • Agent Orchestration • Working & Verified",
+      stack: "Python • FastMCP / MCP • Claude Code CLI • Google Antigravity CLI • subprocess",
+      code: `"""
+Agent Bridge: an MCP server that lets a cloud-hosted orchestrator (Claude
+Cowork) dispatch coding tasks to two different vendors' command-line agents
+running on the local machine, routed by blast radius rather than difficulty.
+
+Claude Cowork decomposes a build spec into discrete tasks, assigns each to a
+lane, dispatches it through this bridge, then reviews the resulting code and
+git diff. The bridge exposes two tools, one per agent, and nothing else.
+
+    Claude Cowork (orchestrator, cloud)
+            |
+            | MCP over stdio, via Claude Desktop
+            v
+      agent-bridge (Python, local)
+            |
+            +--> claude.exe  -p   (Claude Code / Fable 5)
+            +--> agy.exe     -p   (Google Antigravity)
+                    |
+                    v
+            Local filesystem, git, tests
+
+Routing rule: the lane that can size a position, send an order, or compute a
+number those decisions depend on runs with a narrow allowlist (Claude Code).
+The lane that can't -- exchange adapters, logging, dashboards, fixtures,
+docs -- runs with broader permissions (Antigravity's headless mode offers no
+granular allowlist, only all-or-nothing). The lane with weaker sandboxing is
+deliberately the lane whose failures are visible.
+
+Security posture: only two binaries can be invoked, both by absolute path
+from environment variables. shell=False with an argv list throughout, no
+shell interpolation anywhere. Every invocation is confined to a single
+workspace root via --add-dir. Hard 30-minute timeout, output truncated at
+40k characters. The stronger-permission lane is scoped to file tools plus
+python, pytest, git status, git diff -- not git commit, not pip, not
+anything with network access.
+
+Windows notes: CreateProcess cannot exec .cmd/.bat shims directly, so those
+are routed through cmd.exe /c. Python's default cp1252 encoding raises
+UnicodeDecodeError on the first non-ASCII character in agent output, so
+encoding is forced to UTF-8 with errors="replace". Microsoft Store installs
+of Claude Desktop are sandboxed and redirect %APPDATA%; the connector config
+lives under %LOCALAPPDATA%\\Packages\\Claude_*\\LocalCache\\Roaming\\Claude\\.
+
+Known limitations: the MCP client times out well before the bridge's own
+30-minute limit, so long-running tasks return a timeout while the agent
+keeps running and completes normally -- the orchestrator has to check disk
+rather than retry, since a second dispatch would run two agents against the
+same files concurrently. Failure detection matches English strings in
+stderr and will break if either CLI reworks its messages; parsing
+--output-format json is the correct fix. Antigravity's headless mode has no
+granular permission allowlist, so that lane runs with skip-permissions --
+the mitigation is lane assignment, not sandboxing.
+"""
+import os, subprocess
+from pathlib import Path
+
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError:
+    from fastmcp import FastMCP
+
+WORKSPACE = Path(os.environ["AGENT_BRIDGE_WORKSPACE"]).resolve()
+CLAUDE_BIN = os.environ["AGENT_BRIDGE_CLAUDE"]
+AGY_BIN = os.environ["AGENT_BRIDGE_AGY"]
+TIMEOUT_SECONDS = 1800
+MAX_OUTPUT_CHARS = 40000
+
+mcp = FastMCP("agent-bridge")
+
+
+def _argv(binary, args):
+    # Windows CreateProcess cannot exec .cmd/.bat; route those through cmd.exe.
+    if binary.lower().endswith((".cmd", ".bat")):
+        return ["cmd.exe", "/c", binary] + args
+    return [binary] + args
+
+
+def _run(binary, args, prompt):
+    if not WORKSPACE.is_dir():
+        return "ERROR: workspace {} does not exist".format(WORKSPACE)
+    try:
+        proc = subprocess.run(
+            _argv(binary, args),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",   # cp1252 default crashes on non-ASCII output
+            errors="replace",
+            cwd=str(WORKSPACE),
+            timeout=TIMEOUT_SECONDS,
+            shell=False,        # no shell interpolation, ever
+        )
+    except subprocess.TimeoutExpired:
+        return "ERROR: timed out after {}s".format(TIMEOUT_SECONDS)
+    except FileNotFoundError:
+        return "ERROR: {} not found".format(binary)
+    except Exception as exc:
+        return "ERROR: {}: {}".format(type(exc).__name__, exc)
+
+    out = proc.stdout or ""
+    err = proc.stderr or ""
+    if err:
+        out += "\\n[stderr]\\n" + err
+    if len(out) > MAX_OUTPUT_CHARS:
+        out = out[:MAX_OUTPUT_CHARS] + "\\n[TRUNCATED]"
+
+    # Both CLIs can exit 0 having done nothing. Treat that as failure.
+    if "auto-denied" in err or "no output produced" in err:
+        return "FAILED (permission auto-denied; exit code was {})\\n{}".format(
+            proc.returncode, out)
+    if proc.returncode == 0 and not proc.stdout.strip():
+        return "FAILED (exit 0 but no stdout)\\n{}".format(out)
+
+    return "exit={}\\n{}".format(proc.returncode, out)
+
+
+@mcp.tool()
+def dispatch_claude_code(prompt: str) -> str:
+    """Run a task in Claude Code (Fable 5) headlessly in the project workspace.
+    Use for anything that can size a position, send an order, or compute a
+    number those decisions depend on."""
+    if not prompt.strip():
+        return "ERROR: empty prompt"
+    return _run(CLAUDE_BIN, [
+        "--model", "claude-fable-5",
+        "--add-dir", str(WORKSPACE),
+        "--allowedTools", "Read", "Write", "Edit", "Glob", "Grep",
+        "Bash(python:*)", "Bash(pytest:*)", "Bash(git status)", "Bash(git diff:*)",
+        "-p", prompt,
+    ], prompt)
+
+
+@mcp.tool()
+def dispatch_antigravity(prompt: str) -> str:
+    """Run a task in Antigravity headlessly in the project workspace.
+    Use for exchange adapters, logging, dashboards, fixtures, scripts, docs."""
+    if not prompt.strip():
+        return "ERROR: empty prompt"
+    return _run(AGY_BIN, [
+        "--effort", "high",
+        "--add-dir", str(WORKSPACE),
+        "--print-timeout", "25m",
+        "--dangerously-skip-permissions",
+        "-p", prompt,
+    ], prompt)
+
+
+if __name__ == "__main__":
+    mcp.run()`
+    },
     falldetect: {
       howToRun: {
         intro: "Runs entirely locally. Defaults to a real webcam on camera index 0 with <code>cv2.VideoCapture(0)</code>, or point it at a video file with <code>--video</code> (this is how the demo above was captured, with no webcam available). MediaPipe is the fussy dependency here, so install it first and pin it.",
@@ -8416,6 +8579,7 @@ if __name__ == "__main__":
     tribe: 'python',
     flappy: 'python',
     eegdashboard: 'python',
+    agentbridge: 'python',
     falldetect: 'python',
     gradescope: 'python',
     canvas: 'python',
