@@ -8,6 +8,9 @@
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
 <!-- SEO & OpenGraph. og:image/twitter:image use a relative path for now;
      once this is hosted at a real domain, prefix them with the full URL
@@ -45,6 +48,9 @@
     --deadly: #ef4444;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  section[id], #about { scroll-margin-top: 84px; }
+  ::selection { background: var(--accent); color: #0b0f1a; }
   .visually-hidden {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -60,7 +66,7 @@
   }
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.55;
@@ -68,6 +74,7 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
   .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, h4, .brand { font-family: "Space Grotesk", Inter, -apple-system, sans-serif; letter-spacing: -0.01em; }
 
   header {
     position: sticky; top: 0; z-index: 50;
@@ -82,7 +89,20 @@
   .hamburger { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
 
   section { padding: 72px 0; }
-  #hero { padding-top: 96px; text-align: center; }
+  #hero { padding-top: 108px; text-align: center; position: relative; }
+  #hero::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    background:
+      radial-gradient(640px 320px at 18% 8%, rgba(56,189,248,0.07), transparent 72%),
+      radial-gradient(560px 300px at 82% 24%, rgba(129,140,248,0.07), transparent 72%);
+  }
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    h1 {
+      background: linear-gradient(115deg, var(--text) 55%, var(--accent) 85%, var(--accent-2) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
   .eyebrow { color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.85rem; }
   h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 12px 0; }
   .lede { color: var(--text-dim); max-width: 640px; margin: 0 auto 28px; }
@@ -91,31 +111,56 @@
     display: inline-block; padding: 12px 22px; border-radius: 8px; font-weight: 600;
     border: 1px solid var(--border);
   }
+  .btn { transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
   .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #0b0f1a; border: none; }
-  .btn-primary:hover { text-decoration: none; opacity: 0.9; }
+  .btn-primary:hover { text-decoration: none; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(56,189,248,0.30); }
   .btn-ghost { color: var(--text); }
-  .btn-ghost:hover { text-decoration: none; border-color: var(--accent); }
+  .btn-ghost:hover { text-decoration: none; border-color: var(--accent); transform: translateY(-1px); }
 
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 20px; margin-top: 56px; }
-  .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
-  .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center;
+    transition: transform 0.2s ease, border-color 0.2s ease; }
+  .stat:hover { transform: translateY(-3px); border-color: rgba(56,189,248,0.45); }
+  .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--accent); font-family: "Space Grotesk", Inter, sans-serif; }
   .stat-label { color: var(--text-dim); font-size: 0.85rem; margin-top: 4px; }
 
   h2 { font-size: 1.8rem; margin-bottom: 6px; }
+  h2::after {
+    content: ""; display: block; width: 56px; height: 3px; border-radius: 2px; margin-top: 10px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  #hero h2::after, #contact h2::after { margin-left: auto; margin-right: auto; }
   .section-lede { color: var(--text-dim); margin-bottom: 32px; max-width: 640px; }
 
   .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
   .filters button {
     background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
     padding: 8px 14px; border-radius: 999px; font-size: 0.85rem; cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
+  .filters button:hover { color: var(--text); border-color: var(--accent); }
   .filters button.active { color: var(--bg); background: var(--accent); border-color: var(--accent); }
 
   .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 22px; }
   .card {
     background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
     padding: 24px; display: flex; flex-direction: column; gap: 12px;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   }
+  .card:hover {
+    transform: translateY(-3px); border-color: rgba(56,189,248,0.40);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.35);
+  }
+  .card details { border-top: 1px solid var(--border); padding-top: 10px; }
+  .card summary {
+    cursor: pointer; color: var(--accent); font-size: 0.88rem; font-weight: 600;
+    list-style: none; user-select: none;
+  }
+  .card summary::-webkit-details-marker { display: none; }
+  .card summary::before { content: "+"; display: inline-block; width: 16px; }
+  .card details[open] summary::before { content: "-"; }
+  .card details[open] summary { margin-bottom: 10px; }
+  .card details p { margin: 0 0 10px; }
   .card-tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .tag {
     font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border);
@@ -151,7 +196,8 @@
   .timeline-item { border-left: 2px solid var(--border); padding-left: 20px; padding-bottom: 32px; position: relative; }
   .timeline-item::before {
     content: ""; position: absolute; left: -7px; top: 2px; width: 12px; height: 12px;
-    border-radius: 50%; background: var(--accent);
+    border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
   }
   .timeline-item h3 { margin: 0 0 2px; font-size: 1.05rem; }
   .timeline-item .meta { color: var(--text-dim); font-size: 0.82rem; margin-bottom: 8px; }
@@ -164,6 +210,15 @@
 
   #contact { text-align: center; }
   footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--text-dim); font-size: 0.82rem; }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .card, .stat, .btn, .filters button { transition: none; }
+    .card:hover, .stat:hover, .btn-primary:hover, .btn-ghost:hover { transform: none; }
+  }
 
   @media (max-width: 720px) {
     .nav-links { position: absolute; top: 64px; left: 0; right: 0; background: var(--bg);
@@ -269,17 +324,12 @@
         <span class="tag">Neural Encoding &amp; AI</span>
         <span class="tag">Pre-Registered Analysis</span>
       </div>
-      <h3>Letting an LLM Predict What Is Happening in a Video From fMRI Data Generated by TRIBE v2</h3>
+      <h3>Brain-to-Narration: An LLM Describes a Video It Never Sees, Using Simulated fMRI</h3>
       <p>Feed a video to Meta's TRIBE v2 brain-encoding model, get its predicted fMRI response across 20,484 cortical surface vertices, then have an LLM narrate what the viewer was probably seeing, with timestamps. The LLM never sees the video, only the brain activity predicted from it.</p>
       <p><strong>The model predictions are real.</strong> Correlated against fMRI actually recorded from a person watching the same episode (public Algonauts/CNeuroMod data), predictions beat a circular-shift null at z = 4.97, with the best-predicted regions in visual cortex and the worst in prefrontal and default-mode. That is the spatial signature a working stimulus-encoding model should have, and it is the hardest thing for a broken pipeline to fake.</p>
-      <p><strong>The naive version of this idea does not work, and I measured how badly.</strong> Handed real anatomical region names and real brain data, an LLM produces fluent, confident, timestamped narration that carries no information at all, scoring at its own chance level. It writes "fusiform activity rises, consistent with a face" because that association is in its training data, not because it is in your numbers. So semantics are decoded by fitted models with measured accuracy instead, and the LLM only narrates what those decoders output, with each claim carrying its reliability. That version beats a timestamp-matched null at z = +3.53, p = 0.001.</p>
-      <p><strong>It generalises past the training material.</strong> Decoders fitted on a 1994 sitcom, applied without retraining to a 1963 feature film with different cast, cinematography and era, still read face presence at r = 0.62, face area at 0.65 and motion at 0.56. Cross-film transfer matches or beats transfer between two halves of the same episode, which rules out scene memorisation.</p>
-      <p><strong>Faces decode from real cortex too, not only from the model.</strong> Running the identical decoder on sub-01's actually recorded BOLD reads face presence at r = 0.37 from a single 300-second run of one person's brain. Predictions decode better still (0.54), which is expected rather than surprising: a model's output has no head motion, scanner drift or physiological noise in it, so it behaves like a denoised estimate. The useful conclusion is that the encoding model is not what limits this pipeline, so effort belongs in the decoders and the choice of stimulus.</p>
-      <p><strong>Every null result in this project turned out to be broken measurement, not absent brain signal.</strong> A face detector flickering 91 times in 300 seconds made face decoding look impossible at r = -0.11; swapping it for a modern detector took the same analysis to +0.52. Reported here because catching that mattered more than any single number.</p>
       <div class="media-slot ready">
         <img src="assets/tribe_summary.png" alt="Four-panel summary figure. Left: bar chart of decoder transfer from a 1994 sitcom (Friends) to a 1963 film (Charade) with no retraining, for motion, face presence, face area and face count, all above a 0.25 usable threshold. Second: transfer matrix heatmap of face presence decoded across every pair of Friends and Charade sources, showing cross-film transfer beats same-episode transfer. Third: bar chart of narration accuracy by arm, showing the calibrated pipeline well above chance and the naive anatomy-label approach at chance. Right: bar chart comparing face, face-area and motion decoding from real recorded BOLD versus TRIBE's predicted responses, with a caption noting no noise ceiling since this is a single run from one subject." loading="lazy" width="1934" height="808" style="width:100%;height:auto;display:block;">
       </div>
-      <p style="font-size:0.8rem;">Source video frames are copyrighted and cannot be shown. Nine pre-registered runs, each scored against criteria locked before the results were seen, are archived with their designs and their failures under View Code. Open limitations: predictions are for an average subject rather than any individual; all test material is conventional narrative film containing faces; and the comparison against recorded BOLD has no noise ceiling, so it shows predictions beat one noisy run, not that they approach cortex's actual capacity.</p>
       <div class="narr-demo">
         <div class="narr-col">
           <h4>Calibrated decoders</h4>
@@ -302,6 +352,18 @@
         </div>
       </div>
       <p style="font-size:0.78rem;">Pre-rendered from an actual run (<code>narrations.json</code>), not a live demo: TRIBE needs roughly one GPU-hour per five-minute clip, so a browser upload-and-narrate UI isn't practical here. Notice the naive column reads more vividly and confidently ("captures full attention," "central to the ongoing narrative") while being wrong three times out of four. That fluency is the trap: it's pattern-matching from anatomy names to associated concepts in training data, not reading the subject's actual brain data.</p>
+      <details>
+        <summary>The full validation story, including what failed</summary>
+        <p><strong>The naive version of this idea does not work, and I measured how badly.</strong> Handed real anatomical region names and real brain data, an LLM produces fluent, confident, timestamped narration that carries no information at all, scoring at its own chance level. It writes "fusiform activity rises, consistent with a face" because that association is in its training data, not because it is in your numbers. So semantics are decoded by fitted models with measured accuracy instead, and the LLM only narrates what those decoders output, with each claim carrying its reliability. That version beats a timestamp-matched null at z = +3.53, p = 0.001.</p>
+        <p><strong>It generalises past the training material.</strong> Decoders fitted on a 1994 sitcom, applied without retraining to a 1963 feature film with different cast, cinematography and era, still read face presence at r = 0.62, face area at 0.65 and motion at 0.56. Cross-film transfer matches or beats transfer between two halves of the same episode, which rules out scene memorisation.</p>
+        <p><strong>Faces decode from real cortex too, not only from the model.</strong> Running the identical decoder on sub-01's actually recorded BOLD reads face presence at r = 0.37 from a single 300-second run of one person's brain. Predictions decode better still (0.54), which is expected rather than surprising: a model's output has no head motion, scanner drift or physiological noise in it, so it behaves like a denoised estimate. The useful conclusion is that the encoding model is not what limits this pipeline, so effort belongs in the decoders and the choice of stimulus.</p>
+        <p><strong>Every null result in this project turned out to be broken measurement, not absent brain signal.</strong> A face detector flickering 91 times in 300 seconds made face decoding look impossible at r = -0.11; swapping it for a modern detector took the same analysis to +0.52. Reported here because catching that mattered more than any single number.</p>
+        <p style="font-size:0.8rem;">Source video frames are copyrighted and cannot be shown. Nine pre-registered runs, each scored against criteria locked before the results were seen, are archived with their designs and their failures under View Code. Open limitations: predictions are for an average subject rather than any individual; all test material is conventional narrative film containing faces; and the comparison against recorded BOLD has no noise ceiling, so it shows predictions beat one noisy run, not that they approach cortex's actual capacity.</p>
+      </details>
+      <details>
+        <summary>Stress test: can this class of model forecast "virality"? (negative result)</summary>
+        <p>Some marketing decks claim resting-state network ratios (attention, frontoparietal control, default mode) can be decoded into a general engagement signal. Tested against TVSum's human importance curves across five network masks with a 1,000-permutation null test, nothing survives Bonferroni correction &mdash; the closest network (frontoparietal control) reaches only p = 0.018 uncorrected against a required p &lt; 0.01. A second, independent probe checked whether that network at least shows the selectivity a real signal would require (tracking scene cuts and speech, but not raw motion): it didn't. Scene cuts were null everywhere, and the motion "negative control" was significant in every network, frontoparietal included. Read together, this looks like loud audio and fast motion driving a shared arousal response across cortex, not selective engagement tracking. No engagement or virality channel ships; full writeup and archived code under View Code.</p>
+      </details>
       <div class="stack">Meta TRIBE v2 (CC-BY-NC-4.0) &bull; PyTorch &bull; fsaverage5 &bull; Schaefer-1000 / Yeo-7 &bull; ridge decoding &bull; nilearn &bull; Algonauts fMRI</div>
       <div class="card-links">
         <a href="code.html?project=tribe">View Code &rarr;</a>
@@ -609,6 +671,24 @@
       });
     }, { threshold: 0.25 });
     demoVideos.forEach((v) => videoObserver.observe(v));
+  }
+
+  // Scroll-reveal: JS adds the classes, so content stays fully visible without JS
+  // and for users who prefer reduced motion.
+  if ('IntersectionObserver' in window &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.card, .stat, .skill-card, .timeline-item').forEach((el) => {
+      el.classList.add('reveal');
+      revealObserver.observe(el);
+    });
   }
 
   // Mobile nav toggle
